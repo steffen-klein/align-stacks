@@ -1,40 +1,36 @@
-clear;
-clc;
-close all;
-
-tic;
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Benedikt Wimmer & Steffen Klein, 2019
 % AG Chlanda, University Heidelberg
 
 % Calculate rigid 3D transformation matrix between two Z-stacks.
-% Both files should be 16-bit composite TIF images created in FIJI/ImageJ and have roughly the same size and
-% orientation.
-
-% Variables to set:
-% channels: total number of channels in tif file
-% channel_for_alignment: position of channel that should be used for registration.
-% image_after_filename: path of the image stack after milling / TS acquisition -> fixed image
-% image_before_filename: path of the image stack before milling / TS
-% acquisition -> moving image
-% xy_res: xy pixel size in um
-% z_res: z distance in um
+% Both files should be 16-bit composite TIF images created in FIJI/ImageJ and have the same size.
+% The results are better if both stacks are already roughly manually aligned using FIJI/ImageJ.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+clear;
+clc;
+close all;
+tic;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% SET ALL NECCESARY VARIABLES HERE
+
+% Set channel information
+channels=3;                 % channels: total number of channels in tif file
+channel_for_alignment=2;    % channel_for_alignment: position of channel that should be used for registration.
+
+% Set pixel size of files
+xy_resUM=0.13;  % xy_res: xy pixel size in um
+z_resUM=0.3;    % z_res: z distance in um
+
 % Set filenames of fixed and moving image
-image_after_filename='lamellaA_after_rotated.tif';
-image_before_filename='lamellaA_before_rotated.tif';
+image_after_filename='lamellaA_after_rotated.tif';      % image_after_filename: path of the image stack after milling / TS acquisition -> fixed image
+image_before_filename='lamellaA_before_rotated.tif';    % image_before_filename: path of the image stack before milling / TS
 
-% Set dimensions of images
-channels=3;
-xy_resUM=0.13;
-z_resUM=0.3;
-
-% Set which channel should be used for the alignment
-channel_for_alignment=2;
+% DO NOT CHANGE ANYTHING FROM THIS POINT
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -49,8 +45,7 @@ size_Z_moving=(size(imfinfo(image_before_filename),1)/channels);
 size_moving=[size_X_moving,size_Y_moving,size_Z_moving];
 clear size_X_moving size_Y_moving size_Z_moving
 
-% Create 3D reference object which holds dimension information for both
-% images
+% Create 3D reference object which holds dimension information for both images
 fixed_reference = imref3d(size_fixed,xy_resUM,xy_resUM,z_resUM);
 moving_reference = imref3d(size_moving,xy_resUM,xy_resUM,z_resUM);
 
@@ -96,8 +91,7 @@ transformation_matrix = imregtform(moving_image{channel_for_alignment},moving_re
 
 toc;
 
-% Transform all channels of moving_image, clear untransformed stack
-% from memory
+% Transform all channels of moving_image, clear untransformed stack from memory
 % moving_image_transformed = init_cell(channels,size_fixed(1),size_fixed(2),size_fixed(3));
 
 for i=1:channels
