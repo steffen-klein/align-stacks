@@ -18,6 +18,10 @@ tic;
 
 % SET ALL NECCESARY VARIABLES HERE
 
+% Set filenames of fixed and moving image
+image_after_filename='lamellaA_after_rotated.tif';      % image_after_filename: path of the image stack after milling / TS acquisition -> fixed image
+image_before_filename='lamellaA_before_rotated.tif';    % image_before_filename: path of the image stack before milling / TS
+
 % Set channel information
 channels=3;                 % channels: total number of channels in tif file
 channel_for_alignment=2;    % channel_for_alignment: position of channel that should be used for registration.
@@ -25,10 +29,6 @@ channel_for_alignment=2;    % channel_for_alignment: position of channel that sh
 % Set pixel size of files
 xy_resUM=0.13;  % xy_res: xy pixel size in um
 z_resUM=0.3;    % z_res: z distance in um
-
-% Set filenames of fixed and moving image
-image_after_filename='lamellaA_after_rotated.tif';      % image_after_filename: path of the image stack after milling / TS acquisition -> fixed image
-image_before_filename='lamellaA_before_rotated.tif';    % image_before_filename: path of the image stack before milling / TS
 
 % DO NOT CHANGE ANYTHING FROM THIS POINT
 
@@ -45,7 +45,8 @@ size_Z_moving=(size(imfinfo(image_before_filename),1)/channels);
 size_moving=[size_X_moving,size_Y_moving,size_Z_moving];
 clear size_X_moving size_Y_moving size_Z_moving
 
-% Create 3D reference object which holds dimension information for both images
+% Create 3D reference object which holds dimension information for both
+% images
 fixed_reference = imref3d(size_fixed,xy_resUM,xy_resUM,z_resUM);
 moving_reference = imref3d(size_moving,xy_resUM,xy_resUM,z_resUM);
 
@@ -71,6 +72,7 @@ for i=1:size_moving(3)
     end
 end
 
+disp('finished importing images');
 toc;
 
 % Use imregtform to calculate transformation matrix based on the fiducial
@@ -89,17 +91,21 @@ metric = registration.metric.MattesMutualInformation;
 % calculate transformation matrix
 transformation_matrix = imregtform(moving_image{channel_for_alignment},moving_reference,fixed_image{channel_for_alignment},fixed_reference,'rigid', optimizer, metric, 'DisplayOptimization', true);
 
+disp('finished calculating transformation matrix');
 toc;
 
-% Transform all channels of moving_image, clear untransformed stack from memory
-% moving_image_transformed = init_cell(channels,size_fixed(1),size_fixed(2),size_fixed(3));
+% Transform all channels of moving_image, clear untransformed stack
+% from memory
+
+moving_image_transformed = init_cell(channels,size_fixed(1),size_fixed(2),size_fixed(3));
 
 for i=1:channels
-    moving_image_transformed{i} = imwarp(moving_image{i},transformation_matrix,'OutputView',fixed_reference);
+    [moving_image_transformed{i},new_ref] = imwarp(moving_image{i},moving_reference,transformation_matrix,'OutputView',fixed_reference);
 end
 
-clear moving_image;
+clear moving_image new_ref;
 
+disp('finished transforming image stack');
 toc;
 
 % Save transformation_matrix
@@ -110,6 +116,7 @@ csvwrite('transformation_matrix.csv',transformation_matrix.T);
 export_stack(fixed_image);
 export_stack(moving_image_transformed);
 
+disp('export complete');
 toc;
 
 % Functions down here: init_cell initializes a cell array of specified
@@ -127,6 +134,3 @@ function export_stack(image)
         imwrite(image{i}(:,:,1),export_filename,'Compression','lzw');
     for j=2:stack
         imwrite(image{i}(:,:,j),export_filename,'WriteMode','append','Compression','lzw');
-    end
-    end
-end
