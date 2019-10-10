@@ -38,12 +38,12 @@ z_resUM=0.3;    % z_res: z distance in um
 [size_X_fixed,size_Y_fixed]=size(imread(image_after_filename));
 size_Z_fixed=(size(imfinfo(image_after_filename),1)/channels);
 size_fixed=[size_X_fixed,size_Y_fixed,size_Z_fixed];
-clear size_X_fixed size_Y_fixed size_Z_fixed
+clear size_X_fixed size_Y_fixed size_Z_fixed;
 
 size_Z_moving=(size(imfinfo(image_before_filename),1)/channels);
 [size_X_moving,size_Y_moving]=size(imread(image_before_filename));
 size_moving=[size_X_moving,size_Y_moving,size_Z_moving];
-clear size_X_moving size_Y_moving size_Z_moving
+clear size_X_moving size_Y_moving size_Z_moving;
 
 % Create 3D reference object which holds dimension information for both
 % images
