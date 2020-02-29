@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Benedikt Wimmer & Steffen Klein, 2019
+% Steffen Klein & Benedikt Wimmer, 2019
 % AG Chlanda, University Heidelberg
 
 % Calculate rigid 3D transformation matrix between two Z-stacks.
