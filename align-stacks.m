@@ -1,7 +1,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Steffen Klein & Benedikt Wimmer, 2019
-% AG Chlanda, University Heidelberg
+% Script by Steffen Klein & Benedikt Wimmer
+% Copyright Chlanda Lab Heidelberg
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Calculate rigid 3D transformation matrix between two Z-stacks.
 % Both files should be 16-bit composite TIF images created in FIJI/ImageJ and have the same size.
